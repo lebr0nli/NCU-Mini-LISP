@@ -1,0 +1,78 @@
+program: stmt+
+
+stmt: exp -> evaluate
+    | def_stmt -> evaluate
+    | print_stmt -> evaluate
+
+?print_stmt.1: "(" "print-num" exp ")" -> print_num
+             | "(" "print-bool" exp ")" -> print_bool
+
+?exp: BOOL_VAL -> boolean
+    | NUMBER -> number
+    | variable -> variable
+    | num_op
+    | logical_op
+    | fun_exp
+    | fun_call
+    | if_exp
+
+?num_op: plus | minus | multiply | divide | modulus | greater | smaller | equal
+
+?plus: "(" "+" exp exp+ ")" -> plus
+
+?minus: "(" "-" exp exp ")" -> minus
+
+?multiply: "(" "*" exp exp+ ")" -> multiply
+
+?divide: "(" "/" exp exp ")" -> divide
+
+?modulus: "(" "mod" exp exp ")" -> modulus
+
+?greater: "(" ">" exp exp ")" -> greater
+
+?smaller: "(" "<" exp exp ")" -> smaller
+
+?equal: "(" "=" exp exp+ ")" -> equal
+
+?logical_op: and_op | or_op | not_op
+
+?and_op.1: "(" "and" exp exp+ ")" -> and_op
+
+?or_op.1: "(" "or" exp exp+ ")" -> or_op
+
+?not_op.1: "(" "not" exp ")" -> not_op
+
+?def_stmt.1: "(" "define" variable exp ")" -> define
+
+?variable: ID
+
+?fun_exp.1: "(" "fun" fun_ids fun_body ")" -> fun_exp
+
+?fun_ids.1: "(" ID* ")" -> fun_ids
+
+?fun_body: def_stmt* exp -> fun_body
+
+?fun_call.0: "(" fun_exp param* ")" -> anoymous_fun_call
+           | "(" fun_name param* ")" -> named_fun_call
+
+?param: exp
+
+?fun_name: ID
+
+?if_exp.1: "(" "if" test_exp then_exp else_exp ")" -> if_then_else
+
+?test_exp: exp
+
+?then_exp: exp
+
+?else_exp: exp
+
+BOOL_VAL: "#t" | "#f"
+
+SEPERATOR: "\t" | "\n" | "\r" | " "
+
+NUMBER: "0" | /[1-9][0-9]*/ | /-[1-9][0-9]*/
+
+ID: /[a-z]([a-z]|[0-9]|\-)*/
+
+%ignore SEPERATOR
