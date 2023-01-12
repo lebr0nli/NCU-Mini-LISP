@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+from contextlib import contextmanager
 from math import prod
 from types import FunctionType
 from typing import Any, Callable, Type, Union
@@ -9,7 +10,6 @@ import rich.traceback
 from lark import Lark, Token, Transformer, v_args
 from lark.exceptions import UnexpectedCharacters, UnexpectedEOF, VisitError
 from rich.logging import RichHandler
-from contextlib import contextmanager
 
 rich.traceback.install()
 
